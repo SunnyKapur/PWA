@@ -1,10 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import List from "./components/List";
 import { nanoid } from "nanoid";
+import axios from "axios";
 
 const App = () => {
   const [inpValue, setInpValue] = useState("");
   const [todos, setTodos] = useState([]);
+  const [productsData, setProductsData] = useState([]);
+
+  const getProductsData = async () => {
+    try {
+      let res = await axios.get("https://fakestoreapi.com/products");
+      setProductsData(res.data);
+    } catch (error) {
+      console.log("error in products api", error);
+    }
+  };
+
+  useEffect(() => {
+    getProductsData();
+  }, []);
 
   const addTodo = () => {
     if (inpValue.trim() === "") return;
@@ -43,8 +58,21 @@ const App = () => {
 
       <div className="w-full flex flex-col gap-4 items-center justify-center">
         {todos.map((val) => {
-          return <List key={val.id} todo={val} deleteTodo={deleteTodo} updateTodo={updateTodo} />;
+          return (
+            <List
+              key={val.id}
+              todo={val}
+              deleteTodo={deleteTodo}
+              updateTodo={updateTodo}
+            />
+          );
         })}
+      </div>
+
+      <div>
+        {productsData.map((val) => (
+          <h1 key={val.id}>{val.title}</h1>
+        ))}
       </div>
     </div>
   );

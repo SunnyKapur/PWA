@@ -10,7 +10,6 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      injectRegister: false,
 
       pwaAssets: {
         disabled: false,
@@ -25,6 +24,30 @@ export default defineConfig({
       },
 
       workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => {
+              return (
+                url.origin === "https://fakestoreapi.com" &&
+                url.pathname === "/products"
+              );
+            },
+
+            handler: "NetworkFirst",
+
+            options: {
+              cacheName: "products-cache",
+
+              networkTimeoutSeconds: 3,
+
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 1 week
+              },
+            },
+          },
+        ],
+
         globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
