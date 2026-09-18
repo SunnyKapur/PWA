@@ -21,7 +21,7 @@ const App = () => {
   const updateTodo = (id) => {
     setTodos((prev) => {
       return prev.map((val) =>
-        val.id === id ? { ...val, isCompleted: true } : val,
+        val.id === id ? { ...val, isCompleted: !val.isCompleted } : val,
       );
     });
   };
